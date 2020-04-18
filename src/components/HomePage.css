@@ -1,0 +1,86 @@
+/* For centering all home page elements */
+.centered-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Coordinate text fields on the home page */
+.coordinate-field {
+    border-radius: 2px;
+    border: 1px solid darkgrey;
+    margin-top: 4px;
+    height: 30px;
+    width: 240px;
+    text-indent: 4px;
+}
+
+/* Placeholder text inside coordinate fields */
+::placeholder {
+    color: #606060;
+    font-weight: normal;
+    text-indent: 4px;
+    font-size: 14px;
+    text-align: center;
+}
+
+/* Submit button for data on the home page */
+.submit-data-button {
+    border-radius: 2px;
+    border: 1px solid darkgrey;
+    text-align: center;
+    text-decoration: none;
+    background-color: white;
+    color: #606060;
+    font-size: 14px;
+    width: 242px;
+    margin-top: 4px;
+    height: 20px;
+}
+
+/* Hovering the submit button */
+.submit-data-button:hover {
+    background-color: #606060;
+    color: white;
+}
+
+/* Subheadings */
+h3 {
+    color: #606060;
+    text-decoration: none;
+    font-weight: normal;
+    font-size: 20px;
+}
+
+/* Text describing the length of the day */
+.day-length-text {
+    font-size: 16px;
+    color: #606060;
+    text-decoration: none;
+    text-align: center;
+}
+
+/* Class for div surrounding both date picker fields */
+.centered-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+/* Individual date picker fields */
+.date-picker {
+    height: 30px;
+    margin-top: 10px;
+    color: #606060;
+    width: 120px;
+    text-align: center;
+    font-size: 14px;
+    border-radius: 2px;
+    border: 1px solid darkgrey;
+    margin-left: -1px;
+    margin-right: -1px;
+}
+
+#current-date-picker {
+    width: 240px;
+}
