@@ -7,6 +7,7 @@ import DayLengthInfo from "./DayLengthInfo";
 
 import DatePicker from "react-datepicker/es";
 import "react-datepicker/dist/react-datepicker.css";
+import ReactVisChart from "./ReactVisChart";
 
 
 class HomePage extends Component {
@@ -42,8 +43,10 @@ class HomePage extends Component {
         startDate: new Date(),
         endDate: new Date(),
         showInfo: false,
+        showGraph: false,
         linkToFetch: "https://api.sunrise-sunset.org/json?lat=",
-        keyValue: 1,
+        infoKeyValue: 1,
+        graphKeyValue: 1,
     };
 
     handleInputChange = (e, name) => {
@@ -75,13 +78,29 @@ class HomePage extends Component {
                 linkToFetch: "https://api.sunrise-sunset.org/json?lat=" + lat + "&lng="
                     + long + "&date=" + this.state.currentDateString,
                 showInfo: true,
-                keyValue: this.state.keyValue + 1,
+                infoKeyValue: this.state.infoKeyValue + 1,
             });
         }
         else {
             alert("Sisestatud koordinaadid on vigased! \n" +
                 "Laiuskraadide vahemik on -90.0, 90.0). \n" +
                 "Pikkuskraadide vahemik on (-180.0, 180.0).");
+        }
+    };
+
+    handleBarGraphClick = e => {
+        let lat = this.state.latitude;
+        let long = this.state.longtitude;
+        if (this.state.latitude == null || this.state.longtitude == null) {
+            alert('Sisestage ja kinnitage enne graafiku joonistamist koordinaadid!');
+        }
+        else {
+            this.setState({
+                linkToFetch: "https://api.sunrise-sunset.org/json?lat=" + lat + "&lng="
+                    + long + "&date=",
+                showGraph: true,
+                graphKeyValue: this.state.graphKeyValue + 1,
+            });
         }
     };
 
@@ -122,14 +141,14 @@ class HomePage extends Component {
                            id="current-date-picker"
                        />
                    </div>
-                   <input className="submit-data-button" type="submit" value="Kinnita"
+                   <input className="submit-data-button" type="submit" value="Kinnita andmed"
                           onClick={(e) => this.handleClick(e)}
                    />
                </div>
 
                <div>
                    {this.state.showInfo ?
-                    <DayLengthInfo fetchLink={this.state.linkToFetch} key={this.state.keyValue}/> :
+                    <DayLengthInfo fetchLink={this.state.linkToFetch} key={this.state.infoKeyValue}/> :
                        <div>
                            <p>Päikesetõusu kellaaeg: ...</p>
                            <p>Päikeseloojangu kellaaeg: ...</p>
@@ -139,7 +158,7 @@ class HomePage extends Component {
                </div>
 
                <div>
-                   <h3>Kui soovite näha päeva pikkusi üle mitme päeva, valige siit kuupäevavahemik:</h3>
+                   <h3>Kui soovite näha päeva pikkuste graafikut, valige siit kuupäevavahemik (max 30 päeva):</h3>
                    <div className="centered-column">
                        <div className="centered-row">
                            <DatePicker
@@ -153,14 +172,22 @@ class HomePage extends Component {
                                className="date-picker"
                            />
                        </div>
-                       <input className="submit-data-button" type="submit" value="Kinnita" />
+                       <input className="submit-data-button" type="submit" value="Kinnita kuupäevad"
+                              onClick={(e) => this.handleBarGraphClick(e)}
+                       />
                    </div>
                </div>
 
                <div>
-                   <p> Graafik </p>
+                   {this.state.showGraph ?
+                       <ReactVisChart startDate={this.state.startDate} endDate={this.state.endDate}
+                                      fetchLink={this.state.linkToFetch}
+                                      key={this.state.graphKeyValue}/> :
+                       <div>
+                           <p>Siia kuvatakse kuupäevade kinnitamisel vastav graafik.</p>
+                       </div>
+                   }
                </div>
-
            </div>
         );
     }
