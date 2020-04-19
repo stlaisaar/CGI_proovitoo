@@ -43,12 +43,13 @@ class HomePage extends Component {
         endDate: new Date(),
         showInfo: false,
         linkToFetch: "https://api.sunrise-sunset.org/json?lat=",
+        keyValue: 1,
     };
 
     handleInputChange = (e, name) => {
         this.setState({
             [name]: e.target.value
-        })
+        });
     };
 
     handleClick(e) {
@@ -58,6 +59,7 @@ class HomePage extends Component {
             linkToFetch: "https://api.sunrise-sunset.org/json?lat=" + this.state.latitude + "&lng="
                 + this.state.longtitude + "&date=" + this.state.currentDateString,
             showInfo: true,
+            keyValue: this.state.keyValue + 1,
         });
     }
 
@@ -105,7 +107,7 @@ class HomePage extends Component {
 
                <div>
                    {this.state.showInfo ?
-                    <DayLengthInfo fetchLink={this.state.linkToFetch} /> :
+                    <DayLengthInfo fetchLink={this.state.linkToFetch} key={this.state.keyValue}/> :
                        <div>
                            <p>Päikesetõusu kellaaeg: ...</p>
                            <p>Päikeseloojangu kellaaeg: ...</p>

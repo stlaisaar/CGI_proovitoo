@@ -10,7 +10,7 @@ class DayLengthInfo extends Component {
             isLoaded: false,
             results: [],
             status: null,
-            fetchLink: "https://api.sunrise-sunset.org/json?lat=36.7201600&lng=-4.4203400&date=2020-04-19",
+            fetchLink: props.fetchLink,
         };
     }
 
