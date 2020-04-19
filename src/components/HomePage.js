@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import './HomePage.css';
 
 import Header from "./Header";
+import MapContainer from "./Map";
+import DayLengthInfo from "./DayLengthInfo";
 
 import DatePicker from "react-datepicker/es";
 import "react-datepicker/dist/react-datepicker.css";
@@ -11,15 +13,11 @@ class HomePage extends Component {
 
     // DatePicker logic: https://www.npmjs.com/package/react-datepicker &
     //                   https://reactdatepicker.com/
-    state = {
-        currentDate: new Date(),
-        startDate: new Date(),
-        endDate: new Date()
-    };
 
     handleCurrentDateChange = date => {
         this.setState({
-            currentDate: date
+            currentDate: date,
+            currentDateString: date.toISOString().substring(0, date.toISOString().indexOf('T')),
         });
     };
 
@@ -35,23 +33,60 @@ class HomePage extends Component {
         });
     };
 
+    state = {
+        message: '',
+        latitude: '',
+        longtitude: '',
+        currentDate: new Date(),
+        currentDateString: "",
+        startDate: new Date(),
+        endDate: new Date(),
+        showInfo: false,
+        linkToFetch: "https://api.sunrise-sunset.org/json?lat=",
+    };
+
+    handleInputChange = (e, name) => {
+        this.setState({
+            [name]: e.target.value
+        })
+    };
+
+    handleClick(e) {
+        e.preventDefault();
+        this.setState({
+            currentDateString: this.state.currentDate.toISOString(),
+            linkToFetch: "https://api.sunrise-sunset.org/json?lat=" + this.state.latitude + "&lng="
+                + this.state.longtitude + "&date=" + this.state.currentDateString,
+            showInfo: true,
+        });
+    }
+
+
     render() {
         return (
-           <div className="centered-column">
+           <div className="centered-column" id="main-div">
                <Header/>
 
                <div>
                    <h3>Valige oma asukoht kaardilt:</h3>
                </div>
 
+               <div style={{width: '100%', height: '240px', zIndex: '-1'}}>
+                   <MapContainer/>
+               </div>
+
                <div className="centered-column">
-                   <h3>... või sisestage siia oma koordinaadid:</h3>
+                   <h3>või sisestage siia oma koordinaadid (EPSG:4326 süsteemis):</h3>
                    <div className="centered-column">
                        <form>
-                           <input className="coordinate-field" type="text" placeholder="Laiuskraadid" name="latitude" />
+                           <input className="coordinate-field" type="text" placeholder="Laiuskraadid" name="latitude"
+                                  onChange={(e) => this.handleInputChange(e, 'latitude')}
+                           />
                        </form>
                        <form>
-                           <input className="coordinate-field" type="text" placeholder="Pikkuskraadid" name="longtitude" />
+                           <input className="coordinate-field" type="text" placeholder="Pikkuskraadid" name="longtitude"
+                                  onChange={(e) => this.handleInputChange(e, 'longtitude')}
+                           />
                        </form>
                    </div>
                    <h3>Valige seejärel sobiv kuupäev:</h3>
@@ -63,13 +98,20 @@ class HomePage extends Component {
                            id="current-date-picker"
                        />
                    </div>
-                   <input className="submit-data-button" type="submit" value="Kinnita" />
+                   <input className="submit-data-button" type="submit" value="Kinnita"
+                          onClick={(e) => this.handleClick(e)}
+                   />
                </div>
 
-               <div className="day-length-text">
-                   <p>Päikesetõusu kellaaeg on 8:00 UTC.</p>
-                   <p>Päikeseloojangu kellaaeg on 18:00 UTC.</p>
-                   <p>Päeva pikkus on 10 tundi.</p>
+               <div>
+                   {this.state.showInfo ?
+                    <DayLengthInfo fetchLink={this.state.linkToFetch} /> :
+                       <div>
+                           <p>Päikesetõusu kellaaeg: ...</p>
+                           <p>Päikeseloojangu kellaaeg: ...</p>
+                           <p>Päeva pikkus: ...</p>
+                       </div>
+                    }
                </div>
 
                <div>
@@ -94,6 +136,7 @@ class HomePage extends Component {
                <div>
                    <p> Graafik </p>
                </div>
+
            </div>
         );
     }
