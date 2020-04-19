@@ -52,16 +52,38 @@ class HomePage extends Component {
         });
     };
 
-    handleClick(e) {
-        e.preventDefault();
-        this.setState({
-            currentDateString: this.state.currentDate.toISOString(),
-            linkToFetch: "https://api.sunrise-sunset.org/json?lat=" + this.state.latitude + "&lng="
-                + this.state.longtitude + "&date=" + this.state.currentDateString,
-            showInfo: true,
-            keyValue: this.state.keyValue + 1,
-        });
-    }
+    handleClick = e => {
+        /* API ei toeta pikkuskraadi ja/või laiuskraadi, mille väärtus on täpselt 0, seega tuleb seda suurendada */
+        let lat = this.state.latitude;
+        let long = this.state.longtitude;
+        if (parseFloat(long) === 0.0) {
+            this.setState({
+                longtitude: parseFloat(long) + 0.0001,
+            });
+            long = parseFloat(long) + 0.0001;
+        }
+        if (parseFloat(lat) === 0.0) {
+            this.setState({
+                latitude: parseFloat(lat) + 0.0001,
+            });
+            lat = parseFloat(lat) + 0.0001;
+        }
+        if (parseFloat(lat) >= -85.0 && parseFloat(lat) <= 85.0 &&
+            parseFloat(long) >= -180.0 && parseFloat(long) <= 180.0) {
+            this.setState({
+                currentDateString: this.state.currentDate.toISOString(),
+                linkToFetch: "https://api.sunrise-sunset.org/json?lat=" + lat + "&lng="
+                    + long + "&date=" + this.state.currentDateString,
+                showInfo: true,
+                keyValue: this.state.keyValue + 1,
+            });
+        }
+        else {
+            alert("Sisestatud koordinaadid on vigased! \n" +
+                "Laiuskraadide vahemik on -90.0, 90.0). \n" +
+                "Pikkuskraadide vahemik on (-180.0, 180.0).");
+        }
+    };
 
 
     render() {

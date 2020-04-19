@@ -19,6 +19,10 @@
     text-align: center;
 }
 
+.coordinate-field:hover {
+    border: 1px solid #606060
+}
+
 /* Placeholder text inside coordinate fields */
 ::placeholder {
     color: #606060;
@@ -34,8 +38,8 @@
     border: 1px solid darkgrey;
     text-align: center;
     text-decoration: none;
-    background-color: white;
-    color: #606060;
+    color: white;
+    background-color: #606060;
     font-size: 14px;
     width: 242px;
     margin-top: 4px;
@@ -44,7 +48,7 @@
 
 /* Hovering the submit button */
 .submit-data-button:hover {
-    background-color: #606060;
+    background-color: #404040;
     color: white;
 }
 
@@ -53,11 +57,11 @@ h3 {
     color: #606060;
     text-decoration: none;
     font-weight: normal;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 p {
-    font-size: 16px;
+    font-size: 15px;
     color: #606060;
     text-decoration: none;
     text-align: center;
@@ -82,6 +86,10 @@ p {
     border: 1px solid darkgrey;
     margin-left: -1px;
     margin-right: -1px;
+}
+
+.date-picker:hover {
+    border: 1px solid #606060;
 }
 
 #current-date-picker {
