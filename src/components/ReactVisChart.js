@@ -1,6 +1,13 @@
 import React, { Component } from 'react';
 import '../../node_modules/react-vis/dist/style.css';
-import {XYPlot, VerticalGridLines, HorizontalGridLines, YAxis, XAxis, VerticalBarSeries} from 'react-vis';
+import {
+    XYPlot,
+    VerticalGridLines,
+    HorizontalGridLines,
+    YAxis,
+    XAxis,
+    MarkSeries,
+} from 'react-vis';
 import './ReactVisChart.css';
 
 class ReactVisChart extends Component {
@@ -62,42 +69,29 @@ class ReactVisChart extends Component {
         const { fetchResults, isLoaded, error } = this.state;
         let datesLength = this.calculateDatesBetween(this.props.startDate, this.props.endDate).length;
 
-        console.log(fetchResults);
-        console.log(fetchResults.length);
-        console.log(datesLength);
-        console.log(isLoaded);
-        console.log("- - - - - -");
-
         if (error) {
             return (
               <div>
-                  <p>Error: {error.message}</p>
+                  <p>Error: API-st andmete saamisel esines viga ({error.message}).</p>
               </div>
             );
         }
         else if (fetchResults.length === datesLength && isLoaded) {
-            /*
-            const data = [
-                {x: 0, y: 8},
-                {x: 1, y: 5},
-                {x: 2, y: 4},
-                {x: 3, y: 9},
-                {x: 4, y: 1},
-                {x: 5, y: 7},
-                {x: 6, y: 6},
-                {x: 7, y: 3},
-                {x: 8, y: 2},
-                {x: 9, y: 0}
-            ];
-            */
             return (
                 <div className="barChart">
-                    <XYPlot height={240} width={400} xType="ordinal">
+                    <XYPlot height={300} width={450}
+                            xType="ordinal"
+                            color={"#e11937"}
+                    >
                         <VerticalGridLines/>
+                        <MarkSeries data={fetchResults}/>
                         <HorizontalGridLines/>
-                        <XAxis/>
-                        <YAxis/>
-                        <VerticalBarSeries data={fetchResults}/>
+                        <XAxis style={{fontSize: "10px"}}
+                               tickLabelAngle={60}
+                        />
+                        <YAxis title={"Minuteid päevas"}
+                               style={{fontSize: "10px"}}
+                        />
                     </XYPlot>
                 </div>
             );

@@ -40,7 +40,7 @@ class DayLengthInfo extends Component {
             return (
                 <div>
                     <p>&nbsp;</p>
-                    <p>Error: {error.message}</p>
+                    <p>Error: API-st andmete saamisel esines viga ({error.message}).</p>
                     <p>&nbsp;</p>
                 </div>
             );
@@ -48,9 +48,9 @@ class DayLengthInfo extends Component {
         else if (!isLoaded) {
             return (
                 <div>
-                    <p>Laeb ...</p>
-                    <p>Laeb ...</p>
-                    <p>Laeb ...</p>
+                    <p>&nbsp;</p>
+                    <p>Andmed laevad...</p>
+                    <p>&nbsp;</p>
                 </div>
             );
         }

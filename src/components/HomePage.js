@@ -2,19 +2,19 @@ import React, {Component} from 'react';
 import './HomePage.css';
 
 import Header from "./Header";
-import MapContainer from "./Map";
 import DayLengthInfo from "./DayLengthInfo";
 
+// DatePicker logic: https://www.npmjs.com/package/react-datepicker &
+//                   https://reactdatepicker.com/
 import DatePicker from "react-datepicker/es";
 import "react-datepicker/dist/react-datepicker.css";
+
 import ReactVisChart from "./ReactVisChart";
+
 import LeafletMap from "./LeafletMap";
 
 
 class HomePage extends Component {
-
-    // DatePicker logic: https://www.npmjs.com/package/react-datepicker &
-    //                   https://reactdatepicker.com/
 
     handleCurrentDateChange = date => {
         this.setState({
