@@ -37,14 +37,24 @@ class DayLengthInfo extends Component {
     render() {
         const { error, isLoaded, results } = this.state;
         if (error) {
-            return <div>Error: {error.message}</div>;
-        } else if (!isLoaded) {
-            return <div>
-                <p>Laeb...</p>
-                <p>Laeb...</p>
-                <p>Laeb...</p>
-            </div>;
-        } else {
+            return (
+                <div>
+                    <p>&nbsp;</p>
+                    <p>Error: {error.message}</p>
+                    <p>&nbsp;</p>
+                </div>
+            );
+        }
+        else if (!isLoaded) {
+            return (
+                <div>
+                    <p>Laeb ...</p>
+                    <p>Laeb ...</p>
+                    <p>Laeb ...</p>
+                </div>
+            );
+        }
+        else {
             return (
                 <div>
                     <p>Päikesetõusu kellaaeg: {results.sunrise} UTC</p>

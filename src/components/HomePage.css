@@ -1,7 +1,14 @@
-/* For centering all home page elements */
+/* For centering home page elements in a column */
 .centered-column {
     display: flex;
     flex-direction: column;
+    align-items: center;
+}
+
+/* For centering home page elements in a row */
+.centered-row {
+    display: flex;
+    flex-direction: row;
     align-items: center;
 }
 
@@ -19,6 +26,7 @@
     text-align: center;
 }
 
+/* Hovering coordinate text fields on the home page */
 .coordinate-field:hover {
     border: 1px solid #606060
 }
@@ -32,34 +40,37 @@
     text-align: center;
 }
 
-/* Submit button for data on the home page */
+/* Submit button for coordinates and current date on the home page */
 .submit-data-button {
     border-radius: 2px;
-    border: 1px solid darkgrey;
+    border: 1px solid #e11937;
     text-align: center;
     text-decoration: none;
     color: white;
-    background-color: #606060;
+    background-color: #e11937;
     font-size: 14px;
     width: 242px;
     margin-top: 4px;
-    height: 20px;
+    height: 30px;
 }
 
 /* Hovering the submit button */
 .submit-data-button:hover {
-    background-color: #404040;
+    border: 1px solid #606060;
     color: white;
 }
 
-/* Subheadings */
+/* Subheadings on home page */
 h3 {
     color: #606060;
     text-decoration: none;
     font-weight: normal;
     font-size: 18px;
+    margin-bottom: 10px;
+    margin-top: 14px;
 }
 
+/* Regular paragraphs on home page */
 p {
     font-size: 15px;
     color: #606060;
@@ -67,14 +78,8 @@ p {
     text-align: center;
 }
 
-/* Class for div surrounding both date picker fields */
-.centered-row {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-}
 
-/* Individual date picker fields */
+/* All date pickers */
 .date-picker {
     height: 30px;
     margin-top: 10px;
@@ -88,10 +93,12 @@ p {
     margin-right: -1px;
 }
 
+/* Hovering any date pickers */
 .date-picker:hover {
     border: 1px solid #606060;
 }
 
+/* Date picker for current date */
 #current-date-picker {
     width: 240px;
 }

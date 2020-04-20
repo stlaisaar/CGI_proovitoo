@@ -1,43 +1,50 @@
 import React, { Component } from 'react';
 import '../../node_modules/react-vis/dist/style.css';
 import {XYPlot, VerticalGridLines, HorizontalGridLines, YAxis, XAxis, VerticalBarSeries} from 'react-vis';
+import './ReactVisChart.css';
 
 class ReactVisChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            startDate: props.startDate,
-            endDate: props.endDate,
-
-            fetchData: [],
-            results: [],
-            status: null,
-            fetchLink: props.fetchLink,
+            fetchResults: [],
+            isLoaded: false,
+            error: null,
         };
     }
 
+    calculateDatesBetween(startDate, endDate) {
+        let datesBetween = [];
+        let currentDate = new Date(startDate);
+        while(currentDate <= endDate){
+            datesBetween.push(currentDate);
+            let newDate = currentDate.setDate(currentDate.getDate() + 1);
+            currentDate = new Date(newDate);
+        }
+        return datesBetween;
+    }
+
     componentDidMount() {
-        let fetchLinkBase = this.state.fetchLink;
-        let start = this.state.startDate;
-        let end = this.state.endDate;
+        let loopDates = this.calculateDatesBetween(this.props.startDate, this.props.endDate);
 
-        let innerFetchData = [];
-
-        let loop = new Date(start);
-        while(loop <= end){
-            let newDate = loop.setDate(loop.getDate() + 1);
-            loop = new Date(newDate);
-
-            let fullFetchLink = fetchLinkBase + loop.toISOString();
-
+        for (let i = 0; i < loopDates.length; i++) {
+            let fetchLinkBase = this.props.fetchLink;
+            let fullFetchLink = fetchLinkBase + loopDates[i].toISOString();
             fetch(fullFetchLink)
                 .then(res => res.json())
                 .then(
                     (result) => {
+                        let date = loopDates[i];
+                        let datePieces = date.toString().split(" ");
+                        let dateString = datePieces[1] + datePieces[2];
+                        let dayLength = result.results.day_length;
+                        let dayLengthPieces = dayLength.split(':');
+                        let minutes = (+dayLengthPieces[0]) * 60 + (+dayLengthPieces[1]);
+                        let midResults = this.state.fetchResults;
+                        midResults.push({x: dateString, y: minutes});
                         this.setState({
+                            fetchResults: midResults,
                             isLoaded: true,
-                            results: result.results,
-                            status: result.status,
                         });
                     },
                     (error) => {
@@ -46,58 +53,62 @@ class ReactVisChart extends Component {
                             error
                         });
                     }
-                );
-
-            innerFetchData.push(this.state.results);
+                )
         }
-        this.setState({
-            fetchData: innerFetchData,
-        });
-
-        console.log(innerFetchData);
     }
 
 
     render() {
-        let fetchDataList = this.state.fetchData;
-        let listLength = fetchDataList.length;
+        const { fetchResults, isLoaded, error } = this.state;
+        let datesLength = this.calculateDatesBetween(this.props.startDate, this.props.endDate).length;
 
-        let data = [];
-        let i;
-        for (i = 0; i < listLength; i++) {
-            let yearMonthDay = fetchDataList[i].sunrise.substring(0, fetchDataList[0].sunrise.indexOf('T'));
-            let monthDay = yearMonthDay.substring(yearMonthDay.indexOf('-')+1, yearMonthDay.length);
-            let dayLength = fetchDataList[i].day_length;
-            let dayLengthPieces = dayLength.split(':');
-            let minutes = (+dayLengthPieces[0]) * 60 + (+dayLengthPieces[1]);
+        console.log(fetchResults);
+        console.log(fetchResults.length);
+        console.log(datesLength);
+        console.log(isLoaded);
+        console.log("- - - - - -");
 
-            data.push({x: monthDay, y: minutes});
+        if (error) {
+            return (
+              <div>
+                  <p>Error: {error.message}</p>
+              </div>
+            );
         }
-        /*
-        const data = [
-            {x: 0, y: 8},
-            {x: 1, y: 5},
-            {x: 2, y: 4},
-            {x: 3, y: 9},
-            {x: 4, y: 1},
-            {x: 5, y: 7},
-            {x: 6, y: 6},
-            {x: 7, y: 3},
-            {x: 8, y: 2},
-            {x: 9, y: 0}
-        ];
-         */
-        return (
-            <div className="App">
-                <XYPlot height={240} width={400}>
-                    <VerticalGridLines />
-                    <HorizontalGridLines />
-                    <XAxis />
-                    <YAxis />
-                    <VerticalBarSeries data={data} />
-                </XYPlot>
-            </div>
-        );
+        else if (fetchResults.length === datesLength && isLoaded) {
+            /*
+            const data = [
+                {x: 0, y: 8},
+                {x: 1, y: 5},
+                {x: 2, y: 4},
+                {x: 3, y: 9},
+                {x: 4, y: 1},
+                {x: 5, y: 7},
+                {x: 6, y: 6},
+                {x: 7, y: 3},
+                {x: 8, y: 2},
+                {x: 9, y: 0}
+            ];
+            */
+            return (
+                <div className="barChart">
+                    <XYPlot height={240} width={400} xType="ordinal">
+                        <VerticalGridLines/>
+                        <HorizontalGridLines/>
+                        <XAxis/>
+                        <YAxis/>
+                        <VerticalBarSeries data={fetchResults}/>
+                    </XYPlot>
+                </div>
+            );
+        }
+        else {
+            return (
+                <div>
+                    <p>Graafik laeb...</p>
+                </div>
+            );
+        }
     }
 }
 

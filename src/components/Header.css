@@ -1,9 +1,10 @@
+/* Header design */
 #header {
-    height: 40px;
-    line-height: 40px;
+    height: 44px;
+    line-height: 44px;
     font-size: 20px;
     width: 100%;
-    background-color: #606060;
+    background-color: #e11937;
     color: white;
     font-weight: bold;
     text-indent: 14px;

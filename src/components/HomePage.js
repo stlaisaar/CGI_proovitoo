@@ -8,6 +8,7 @@ import DayLengthInfo from "./DayLengthInfo";
 import DatePicker from "react-datepicker/es";
 import "react-datepicker/dist/react-datepicker.css";
 import ReactVisChart from "./ReactVisChart";
+import LeafletMap from "./LeafletMap";
 
 
 class HomePage extends Component {
@@ -56,7 +57,7 @@ class HomePage extends Component {
     };
 
     handleClick = e => {
-        /* API ei toeta pikkuskraadi ja/või laiuskraadi, mille väärtus on täpselt 0, seega tuleb seda suurendada */
+        /* API ei toeta pikkuskraadi ja/või laiuskraadi, mille väärtus on täpselt 0, seega tuleb veidi muuta */
         let lat = this.state.latitude;
         let long = this.state.longtitude;
         if (parseFloat(long) === 0.0) {
@@ -94,6 +95,9 @@ class HomePage extends Component {
         if (this.state.latitude == null || this.state.longtitude == null) {
             alert('Sisestage ja kinnitage enne graafiku joonistamist koordinaadid!');
         }
+        else if (this.state.startDate >= this.state.endDate) {
+            alert('Alguskuupäev peab olema väiksem kui lõppkuupäev!');
+        }
         else {
             this.setState({
                 linkToFetch: "https://api.sunrise-sunset.org/json?lat=" + lat + "&lng="
@@ -112,10 +116,6 @@ class HomePage extends Component {
 
                <div>
                    <h3>Valige oma asukoht kaardilt:</h3>
-               </div>
-
-               <div style={{width: '100%', height: '240px', zIndex: '-1'}}>
-                   <MapContainer/>
                </div>
 
                <div className="centered-column">
