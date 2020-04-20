@@ -35,10 +35,11 @@ class HomePage extends Component {
         });
     };
 
+
     state = {
         message: '',
-        latitude: '',
-        longtitude: '',
+        latitude: '58.377916',
+        longtitude: '26.729050',
         currentDate: new Date(),
         currentDateString: "",
         startDate: new Date(),
@@ -48,6 +49,7 @@ class HomePage extends Component {
         linkToFetch: "https://api.sunrise-sunset.org/json?lat=",
         infoKeyValue: 1,
         graphKeyValue: 1,
+        currentPos: [58.377916, 26.729050],
     };
 
     handleInputChange = (e, name) => {
@@ -108,6 +110,14 @@ class HomePage extends Component {
         }
     };
 
+    handleCoordinates = (newCoordinates) => {
+        this.setState({
+            currentPos: newCoordinates,
+            latitude: newCoordinates['lat'].toString(),
+            longtitude: newCoordinates['lng'].toString(),
+        });
+    };
+
 
     render() {
         return (
@@ -117,6 +127,8 @@ class HomePage extends Component {
                <div>
                    <h3>Valige oma asukoht kaardilt:</h3>
                </div>
+
+               <LeafletMap onCoordinatesChange={this.handleCoordinates}/>
 
                <div className="centered-column">
                    <h3>või sisestage siia oma koordinaadid (EPSG:4326 süsteemis):</h3>

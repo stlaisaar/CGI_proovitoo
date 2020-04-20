@@ -7,11 +7,13 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "google-maps-react": "^2.0.2",
+    "leaflet": "^1.6.0",
     "openlayers": "^4.6.5",
     "react": "^16.13.1",
     "react-bar-chart": "^0.1.2",
     "react-datepicker": "^2.14.1",
     "react-dom": "^16.13.1",
+    "react-helmet": "^6.0.0",
     "react-leaflet": "^2.6.3",
     "react-scripts": "3.4.1",
     "react-vis": "^1.11.7"
