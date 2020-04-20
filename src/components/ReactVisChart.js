@@ -72,7 +72,7 @@ class ReactVisChart extends Component {
         if (error) {
             return (
               <div>
-                  <p>Error: API-st andmete saamisel esines viga ({error.message}).</p>
+                  <p>Error: API-st andmete saamisel esines viga.</p>
               </div>
             );
         }
@@ -87,7 +87,8 @@ class ReactVisChart extends Component {
                         <MarkSeries data={fetchResults}/>
                         <HorizontalGridLines/>
                         <XAxis style={{fontSize: "10px"}}
-                               tickLabelAngle={60}
+                               tickLabelAngle={0}
+                               tickPadding={-10}
                         />
                         <YAxis title={"Minuteid päevas"}
                                style={{fontSize: "10px"}}

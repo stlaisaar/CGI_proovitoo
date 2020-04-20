@@ -18,8 +18,11 @@ L.Icon.Default.mergeOptions({
 class LeafletMap extends Component  {
     constructor(props) {
         super(props);
+        let mapKeyVal = this.props.mapKeyValue;
         this.state = {
-            currentPos: [58.377916, 26.729050],
+            currentPos: this.props.latlng,
+            mapKeyValue: mapKeyVal,
+            zoom: 6,
         };
         this.handleClick = this.handleClick.bind(this);
     }
@@ -34,20 +37,28 @@ class LeafletMap extends Component  {
         let newCoordinates = e.latlng;
         this.setState({
             currentPos: newCoordinates,
+            zoom: this.map.leafletElement.getZoom(),
         });
         this.handleCoordinateChange();
     }
 
     render() {
         return (
-            <Map center={[58.387916, 26.729050]} zoom={11} onClick={this.handleClick}>
+            <Map ref={(ref) => { this.map = ref; }}
+                 center={this.state.currentPos}
+                 zoom={this.state.zoom}
+                 onClick={this.handleClick}
+                 key={this.state.mapKeyValue}
+            >
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
                 <Marker position={this.state.currentPos}>
                     <Popup>
-                        Hetkel valitud asukoht! <br/> Vajuta kaardile, et asukohta muuta.
+                        Valitud asukoht:<br/>
+                        Lat: {this.state.currentPos['lat']}<br/>
+                        Lng: {this.state.currentPos['lng']}
                     </Popup>
                 </Marker>
             </Map>

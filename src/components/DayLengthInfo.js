@@ -40,7 +40,7 @@ class DayLengthInfo extends Component {
             return (
                 <div>
                     <p>&nbsp;</p>
-                    <p>Error: API-st andmete saamisel esines viga ({error.message}).</p>
+                    <p>Error: API-st andmete saamisel esines viga.</p>
                     <p>&nbsp;</p>
                 </div>
             );

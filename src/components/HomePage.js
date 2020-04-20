@@ -19,19 +19,20 @@ class HomePage extends Component {
     handleCurrentDateChange = date => {
         this.setState({
             currentDate: date,
-            currentDateString: date.toISOString().substring(0, date.toISOString().indexOf('T')),
         });
     };
 
     handleStartDateChange = date => {
         this.setState({
-            startDate: date
+            startDate: date,
+            showGraph: false,
         });
     };
 
     handleEndDateChange = date => {
         this.setState({
-            endDate: date
+            endDate: date,
+            showGraph: false,
         });
     };
 
@@ -39,9 +40,10 @@ class HomePage extends Component {
     state = {
         message: '',
         latitude: '58.377916',
+        latitudeTemp: '58.377916',
         longtitude: '26.729050',
+        longtitudeTemp: '26.729050',
         currentDate: new Date(),
-        currentDateString: "",
         startDate: new Date(),
         endDate: new Date(),
         showInfo: false,
@@ -49,19 +51,20 @@ class HomePage extends Component {
         linkToFetch: "https://api.sunrise-sunset.org/json?lat=",
         infoKeyValue: 1,
         graphKeyValue: 1,
-        currentPos: [58.377916, 26.729050],
+        mapKeyValue: 1,
     };
 
     handleInputChange = (e, name) => {
         this.setState({
-            [name]: e.target.value
+            [name]: e.target.value,
         });
     };
 
     handleClick = e => {
         /* API ei toeta pikkuskraadi ja/või laiuskraadi, mille väärtus on täpselt 0, seega tuleb veidi muuta */
-        let lat = this.state.latitude;
-        let long = this.state.longtitude;
+        let lat = this.state.latitudeTemp;
+        let long = this.state.longtitudeTemp;
+        let currentDateString = this.state.currentDate.toISOString();
         if (parseFloat(long) === 0.0) {
             this.setState({
                 longtitude: parseFloat(long) + 0.0001,
@@ -77,11 +80,13 @@ class HomePage extends Component {
         if (parseFloat(lat) >= -85.0 && parseFloat(lat) <= 85.0 &&
             parseFloat(long) >= -180.0 && parseFloat(long) <= 180.0) {
             this.setState({
-                currentDateString: this.state.currentDate.toISOString(),
                 linkToFetch: "https://api.sunrise-sunset.org/json?lat=" + lat + "&lng="
-                    + long + "&date=" + this.state.currentDateString,
+                    + long + "&date=" + currentDateString,
                 showInfo: true,
                 infoKeyValue: this.state.infoKeyValue + 1,
+                latitude: lat,
+                longtitude: long,
+                mapKeyValue: this.state.mapKeyValue + 1,
             });
         }
         else {
@@ -101,18 +106,30 @@ class HomePage extends Component {
             alert('Alguskuupäev peab olema väiksem kui lõppkuupäev!');
         }
         else {
-            this.setState({
-                linkToFetch: "https://api.sunrise-sunset.org/json?lat=" + lat + "&lng="
-                    + long + "&date=",
-                showGraph: true,
-                graphKeyValue: this.state.graphKeyValue + 1,
-            });
+            let currentDate = new Date(this.state.startDate);
+            let amountOfDates = 0;
+            let endDate = this.state.endDate;
+            while (currentDate <= endDate) {
+                amountOfDates++;
+                let newDate = currentDate.setDate(currentDate.getDate() + 1);
+                currentDate = new Date(newDate);
+            }
+            if (amountOfDates > 30) {
+                alert('Kuupäevade vahe võib olla maksimum 30 päeva!')
+            }
+            else {
+                this.setState({
+                    linkToFetch: "https://api.sunrise-sunset.org/json?lat=" + lat + "&lng="
+                        + long + "&date=",
+                    showGraph: true,
+                    graphKeyValue: this.state.graphKeyValue + 1,
+                });
+            }
         }
     };
 
     handleCoordinates = (newCoordinates) => {
         this.setState({
-            currentPos: newCoordinates,
             latitude: newCoordinates['lat'].toString(),
             longtitude: newCoordinates['lng'].toString(),
         });
@@ -125,26 +142,32 @@ class HomePage extends Component {
                <Header/>
 
                <div>
-                   <h3>Valige oma asukoht kaardilt:</h3>
+                   <h3>Aktiivsed koordinaadid - lat: {this.state.latitude.substring(0, 9)}, lng: {this.state.longtitude.substring(0, 9)}</h3>
                </div>
 
-               <LeafletMap onCoordinatesChange={this.handleCoordinates}/>
+               <LeafletMap onCoordinatesChange={this.handleCoordinates}
+                           latlng={{lat: this.state.latitude, lng: this.state.longtitude}}
+                           key={this.state.mapKeyValue}
+               />
 
                <div className="centered-column">
-                   <h3>või sisestage siia oma koordinaadid (EPSG:4326 süsteemis):</h3>
+                   <h3>
+                       Valige asukoht kaardilt ... <br/>
+                       ... või sisestage alla vastavad (EPSG:4326) koordinaadid:
+                   </h3>
                    <div className="centered-column">
                        <form>
                            <input className="coordinate-field" type="text" placeholder="Laiuskraadid" name="latitude"
-                                  onChange={(e) => this.handleInputChange(e, 'latitude')}
+                                  onChange={(e) => this.handleInputChange(e, 'latitudeTemp')}
                            />
                        </form>
                        <form>
                            <input className="coordinate-field" type="text" placeholder="Pikkuskraadid" name="longtitude"
-                                  onChange={(e) => this.handleInputChange(e, 'longtitude')}
+                                  onChange={(e) => this.handleInputChange(e, 'longtitudeTemp')}
                            />
                        </form>
                    </div>
-                   <h3>Valige seejärel sobiv kuupäev:</h3>
+                   <h3>Valige seejärel kuupäev:</h3>
                    <div className="centered-column">
                        <DatePicker
                            selected={this.state.currentDate}
@@ -162,15 +185,15 @@ class HomePage extends Component {
                    {this.state.showInfo ?
                     <DayLengthInfo fetchLink={this.state.linkToFetch} key={this.state.infoKeyValue}/> :
                        <div>
-                           <p>Päikesetõusu kellaaeg: ...</p>
-                           <p>Päikeseloojangu kellaaeg: ...</p>
-                           <p>Päeva pikkus: ...</p>
+                           <p>&nbsp;</p>
+                           <p>Siia kuvatakse andmete kinnitamisel päeva pikkuse info.</p>
+                           <p>&nbsp;</p>
                        </div>
                     }
                </div>
 
                <div>
-                   <h3>Kui soovite näha päeva pikkuste graafikut, valige siit kuupäevavahemik (max 30 päeva):</h3>
+                   <h3>Päevade pikkuste graafiku kuvamiseks valige alt kuupäevavahemik (max 30 päeva):</h3>
                    <div className="centered-column">
                        <div className="centered-row">
                            <DatePicker
