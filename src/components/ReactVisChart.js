@@ -87,8 +87,8 @@ class ReactVisChart extends Component {
                         <MarkSeries data={fetchResults}/>
                         <HorizontalGridLines/>
                         <XAxis style={{fontSize: "10px"}}
-                               tickLabelAngle={0}
-                               tickPadding={-10}
+                               tickLabelAngle={90}
+                               tickPadding={30}
                         />
                         <YAxis title={"Minuteid päevas"}
                                style={{fontSize: "10px"}}

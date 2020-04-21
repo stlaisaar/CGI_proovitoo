@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
-import { Icon } from "leaflet";
 import "./LeafletMap.css";
 
 /* Markeri mitte kuvamise fix: https://github.com/PaulLeCam/react-leaflet/issues/453 */
@@ -49,6 +48,7 @@ class LeafletMap extends Component  {
                  zoom={this.state.zoom}
                  onClick={this.handleClick}
                  key={this.state.mapKeyValue}
+                 maxBounds={[[-90, -180], [90, 180]]}
             >
                 <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
