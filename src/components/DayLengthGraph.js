@@ -30,6 +30,23 @@ class DayLengthGraph extends Component {
             let newDate = currentDate.setDate(currentDate.getDate() + 1);
             currentDate = new Date(newDate);
         }
+        // Millegipärast satuvad array-sse vahepeal valed kuupäevad
+        // Viimane kuupäev on suurem kui ta peaks, kustutame ta
+        if (datesBetweenList[datesBetweenList.length-1].getDay() > endDate.getDay()) {
+            datesBetweenList.pop();
+        }
+        // Viimane kuupäev on väiksem kui ta peaks, lisame õige viimase
+        if (datesBetweenList[datesBetweenList.length-1].getDay() < endDate.getDay()) {
+            datesBetweenList.push(endDate);
+        }
+        // Esimene kuupäev on väiksem kui ta peaks, kustutame ta
+        if (datesBetweenList[0].getDay() < startDate.getDay()) {
+            datesBetweenList.shift();
+        }
+        // Esimene kuupäev on suurem kui ta peaks, lisame õige esimese
+        if (datesBetweenList[0].getDay() > startDate.getDay()) {
+            datesBetweenList.unshift(startDate);
+        }
         return datesBetweenList;
     }
 
