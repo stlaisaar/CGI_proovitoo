@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 // Based on: https://reactjs.org/docs/faq-ajax.html
 // Using this API: https://sunrise-sunset.org/api?fbclid=IwAR1Rg_gy7uAfxklZ4NcyN-7Qmc9y4wjnJ8FvvxMO7zHp0pyNA_BcVMv8GZc
+// Similar logic used for displaying the graph in 'DayLengthGraph.js'
 class DayLengthInfo extends Component {
     constructor(props) {
         super(props);
@@ -9,7 +10,6 @@ class DayLengthInfo extends Component {
             error: null,
             isLoaded: false,
             results: [],
-            status: null,
             fetchLink: props.fetchLink,
         };
     }
@@ -22,7 +22,6 @@ class DayLengthInfo extends Component {
                     this.setState({
                         isLoaded: true,
                         results: result.results,
-                        status: result.status,
                     });
                 },
                 (error) => {

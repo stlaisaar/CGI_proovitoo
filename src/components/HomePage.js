@@ -9,9 +9,9 @@ import DayLengthInfo from "./DayLengthInfo";
 import DatePicker from "react-datepicker/es";
 import "react-datepicker/dist/react-datepicker.css";
 
-import ReactVisChart from "./ReactVisChart";
+import DayLengthGraph from "./DayLengthGraph";
 
-import LeafletMap from "./LeafletMap";
+import WorldMap from "./WorldMap";
 
 
 class HomePage extends Component {
@@ -62,47 +62,39 @@ class HomePage extends Component {
 
     handleClick = e => {
         /* API ei toeta pikkuskraadi ja/või laiuskraadi, mille väärtus on täpselt 0, seega tuleb veidi muuta */
-        let lat = this.state.latitudeTemp;
-        let long = this.state.longtitudeTemp;
+        let currentLatitudeTemp = this.state.latitudeTemp;
+        let currentLongtitudeTemp = this.state.longtitudeTemp;
         let currentDateString = this.state.currentDate.toISOString();
-        if (parseFloat(long) === 0.0) {
-            this.setState({
-                longtitude: parseFloat(long) + 0.0001,
-            });
-            long = parseFloat(long) + 0.0001;
+        if (parseFloat(currentLongtitudeTemp) === 0.0) {
+            currentLongtitudeTemp = 0.0001.toString();
         }
-        if (parseFloat(lat) === 0.0) {
-            this.setState({
-                latitude: parseFloat(lat) + 0.0001,
-            });
-            lat = parseFloat(lat) + 0.0001;
+        if (parseFloat(currentLatitudeTemp) === 0.0) {
+            currentLatitudeTemp = 0.0001.toString();
         }
-        if (parseFloat(lat) >= -85.0 && parseFloat(lat) <= 85.0 &&
-            parseFloat(long) >= -180.0 && parseFloat(long) <= 180.0) {
+        if (parseFloat(currentLatitudeTemp) >= -85.0 && parseFloat(currentLatitudeTemp) <= 85.0 &&
+            parseFloat(currentLongtitudeTemp) >= -180.0 && parseFloat(currentLongtitudeTemp) <= 180.0) {
             this.setState({
-                linkToFetch: "https://api.sunrise-sunset.org/json?lat=" + lat + "&lng="
-                    + long + "&date=" + currentDateString,
+                linkToFetch: "https://api.sunrise-sunset.org/json?lat=" + currentLatitudeTemp +
+                    "&lng=" + currentLongtitudeTemp +
+                    "&date=" + currentDateString,
                 showInfo: true,
                 infoKeyValue: this.state.infoKeyValue + 1,
-                latitude: lat,
-                longtitude: long,
+                latitude: currentLatitudeTemp,
+                longtitude: currentLongtitudeTemp,
                 mapKeyValue: this.state.mapKeyValue + 1,
             });
         }
         else {
             alert("Sisestatud koordinaadid on vigased! \n" +
-                "Laiuskraadide vahemik on -90.0, 90.0). \n" +
-                "Pikkuskraadide vahemik on (-180.0, 180.0).");
+                "Laiuskraadide vahemik on [-85.0, 85.0]. \n" +
+                "Pikkuskraadide vahemik on [-180.0, 180.0].");
         }
     };
 
     handleBarGraphClick = e => {
-        let lat = this.state.latitude;
-        let long = this.state.longtitude;
-        if (this.state.latitude == null || this.state.longtitude == null) {
-            alert('Sisestage ja kinnitage enne graafiku joonistamist koordinaadid!');
-        }
-        else if (this.state.startDate >= this.state.endDate) {
+        let currentLatitude = this.state.latitude;
+        let currentLongtitude = this.state.longtitude;
+        if (this.state.startDate >= this.state.endDate) {
             alert('Alguskuupäev peab olema väiksem kui lõppkuupäev!');
         }
         else {
@@ -119,8 +111,9 @@ class HomePage extends Component {
             }
             else {
                 this.setState({
-                    linkToFetch: "https://api.sunrise-sunset.org/json?lat=" + lat + "&lng="
-                        + long + "&date=",
+                    linkToFetch: "https://api.sunrise-sunset.org/json?lat=" + currentLatitude +
+                        "&lng=" + currentLongtitude +
+                        "&date=",
                     showGraph: true,
                     graphKeyValue: this.state.graphKeyValue + 1,
                 });
@@ -128,6 +121,7 @@ class HomePage extends Component {
         }
     };
 
+    /* The child component WorldMap uses this function to update the coordinates here */
     handleCoordinates = (newCoordinates) => {
         this.setState({
             latitude: newCoordinates['lat'].toString(),
@@ -138,16 +132,21 @@ class HomePage extends Component {
 
     render() {
         return (
-           <div className="centered-column" id="main-div">
+           <div className="centered-column">
                <Header/>
 
                <div>
-                   <h3>Aktiivsed koordinaadid - lat: {this.state.latitude.substring(0, 9)}, lng: {this.state.longtitude.substring(0, 9)}</h3>
+                   <h3>
+                       Aktiivsed koordinaadid –
+                       lat: {this.state.latitude.substring(0, 9)},
+                       lng: {this.state.longtitude.substring(0, 9)}
+                   </h3>
                </div>
 
-               <LeafletMap onCoordinatesChange={this.handleCoordinates}
-                           latlng={{lat: this.state.latitude, lng: this.state.longtitude}}
-                           key={this.state.mapKeyValue}
+               <WorldMap
+                   onCoordinatesChange={this.handleCoordinates}
+                   latlng={{lat: this.state.latitude, lng: this.state.longtitude}}
+                   key={this.state.mapKeyValue}
                />
 
                <div className="centered-column">
@@ -155,19 +154,24 @@ class HomePage extends Component {
                        Valige asukoht kaardilt ... <br/>
                        ... või sisestage alla vastavad (EPSG:4326) koordinaadid:
                    </h3>
+
                    <div className="centered-column">
                        <form>
-                           <input className="coordinate-field" type="text" placeholder="Laiuskraadid" name="latitude"
-                                  onChange={(e) => this.handleInputChange(e, 'latitudeTemp')}
+                           <input
+                               className="coordinate-field" type="text" placeholder="Laiuskraadid" name="latitude"
+                               onChange={(e) => this.handleInputChange(e, 'latitudeTemp')}
                            />
                        </form>
                        <form>
-                           <input className="coordinate-field" type="text" placeholder="Pikkuskraadid" name="longtitude"
-                                  onChange={(e) => this.handleInputChange(e, 'longtitudeTemp')}
+                           <input
+                               className="coordinate-field" type="text" placeholder="Pikkuskraadid" name="longtitude"
+                               onChange={(e) => this.handleInputChange(e, 'longtitudeTemp')}
                            />
                        </form>
                    </div>
+
                    <h3>Valige seejärel kuupäev:</h3>
+
                    <div className="centered-column">
                        <DatePicker
                            selected={this.state.currentDate}
@@ -176,14 +180,19 @@ class HomePage extends Component {
                            id="current-date-picker"
                        />
                    </div>
-                   <input className="submit-data-button" type="submit" value="Kinnita andmed"
-                          onClick={(e) => this.handleClick(e)}
+
+                   <input
+                       className="submit-data-button" type="submit" value="Kinnita andmed"
+                       onClick={(e) => this.handleClick(e)}
                    />
                </div>
 
                <div>
                    {this.state.showInfo ?
-                    <DayLengthInfo fetchLink={this.state.linkToFetch} key={this.state.infoKeyValue}/> :
+                    <DayLengthInfo
+                        fetchLink={this.state.linkToFetch}
+                        key={this.state.infoKeyValue}
+                    /> :
                        <div>
                            <p>&nbsp;</p>
                            <p>Siia kuvatakse andmete kinnitamisel päeva pikkuse info.</p>
@@ -194,6 +203,7 @@ class HomePage extends Component {
 
                <div>
                    <h3>Päevade pikkuste graafiku kuvamiseks valige alt kuupäevavahemik (max 30 päeva):</h3>
+
                    <div className="centered-column">
                        <div className="centered-row">
                            <DatePicker
@@ -201,23 +211,28 @@ class HomePage extends Component {
                                onChange={this.handleStartDateChange}
                                className="date-picker"
                            />
+
                            <DatePicker
                                selected={this.state.endDate}
                                onChange={this.handleEndDateChange}
                                className="date-picker"
                            />
                        </div>
-                       <input className="submit-data-button" type="submit" value="Kinnita kuupäevad"
-                              onClick={(e) => this.handleBarGraphClick(e)}
+
+                       <input
+                           className="submit-data-button" type="submit" value="Kinnita kuupäevad"
+                           onClick={(e) => this.handleBarGraphClick(e)}
                        />
                    </div>
                </div>
 
                <div>
                    {this.state.showGraph ?
-                       <ReactVisChart startDate={this.state.startDate} endDate={this.state.endDate}
-                                      fetchLink={this.state.linkToFetch}
-                                      key={this.state.graphKeyValue}/> :
+                       <DayLengthGraph
+                           startDate={this.state.startDate}
+                           endDate={this.state.endDate}
+                           fetchLink={this.state.linkToFetch}
+                           key={this.state.graphKeyValue}/> :
                        <div>
                            <p>Siia kuvatakse kuupäevade kinnitamisel vastav graafik.</p>
                        </div>

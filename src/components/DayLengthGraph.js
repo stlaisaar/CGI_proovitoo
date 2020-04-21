@@ -8,9 +8,9 @@ import {
     XAxis,
     MarkSeries,
 } from 'react-vis';
-import './ReactVisChart.css';
+import './DayLengthGraph.css';
 
-class ReactVisChart extends Component {
+class DayLengthGraph extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,36 +21,36 @@ class ReactVisChart extends Component {
     }
 
     calculateDatesBetween(startDate, endDate) {
-        let datesBetween = [];
+        let datesBetweenList = [];
+        datesBetweenList.push(startDate);
         let currentDate = new Date(startDate);
-        while(currentDate <= endDate){
-            datesBetween.push(currentDate);
+        while (currentDate < endDate) {
             let newDate = currentDate.setDate(currentDate.getDate() + 1);
             currentDate = new Date(newDate);
+            datesBetweenList.push(currentDate);
         }
-        return datesBetween;
+        return datesBetweenList;
     }
 
     componentDidMount() {
-        let loopDates = this.calculateDatesBetween(this.props.startDate, this.props.endDate);
+        let datesToLoop = this.calculateDatesBetween(this.props.startDate, this.props.endDate);
 
-        for (let i = 0; i < loopDates.length; i++) {
+        for (let i = 0; i < datesToLoop.length; i++) {
             let fetchLinkBase = this.props.fetchLink;
-            let fullFetchLink = fetchLinkBase + loopDates[i].toISOString();
+            let fullFetchLink = fetchLinkBase + datesToLoop[i].toISOString().substring(0, datesToLoop[i].toISOString().indexOf('T'));
+            console.log(fullFetchLink);
             fetch(fullFetchLink)
                 .then(res => res.json())
                 .then(
                     (result) => {
-                        let date = loopDates[i];
-                        let datePieces = date.toString().split(" ");
-                        let dateString = datePieces[1] + datePieces[2];
-                        let dayLength = result.results.day_length;
-                        let dayLengthPieces = dayLength.split(':');
-                        let minutes = (+dayLengthPieces[0]) * 60 + (+dayLengthPieces[1]);
-                        let midResults = this.state.fetchResults;
-                        midResults.push({x: dateString, y: minutes});
+                        let datePieces = datesToLoop[i].toString().split(" ");
+                        let dateString = datePieces[1] + ". " + datePieces[2];
+                        let dayLengthPieces = result.results.day_length.split(':');
+                        let minutesOfSunlight = (+dayLengthPieces[0]) * 60 + (+dayLengthPieces[1]);
+                        let resultsSoFar = this.state.fetchResults;
+                        resultsSoFar.push({x: dateString, y: minutesOfSunlight});
                         this.setState({
-                            fetchResults: midResults,
+                            fetchResults: resultsSoFar,
                             isLoaded: true,
                         });
                     },
@@ -79,19 +79,22 @@ class ReactVisChart extends Component {
         else if (fetchResults.length === datesLength && isLoaded) {
             return (
                 <div className="barChart">
-                    <XYPlot height={300} width={450}
-                            xType="ordinal"
-                            color={"#e11937"}
+                    <XYPlot
+                        height={300} width={450}
+                        xType="ordinal"
+                        color={"#e11937"}
                     >
                         <VerticalGridLines/>
                         <MarkSeries data={fetchResults}/>
                         <HorizontalGridLines/>
-                        <XAxis style={{fontSize: "10px"}}
-                               tickLabelAngle={90}
-                               tickPadding={30}
+                        <XAxis
+                            style={{fontSize: "10px"}}
+                            tickLabelAngle={90}
+                            tickPadding={34}
                         />
-                        <YAxis title={"Minuteid päevas"}
-                               style={{fontSize: "10px"}}
+                        <YAxis
+                            title={"Minuteid päevas"}
+                            style={{fontSize: "10px"}}
                         />
                     </XYPlot>
                 </div>
@@ -107,4 +110,4 @@ class ReactVisChart extends Component {
     }
 }
 
-export default ReactVisChart;
+export default DayLengthGraph;

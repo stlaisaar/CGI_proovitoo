@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import { Map, TileLayer, Marker, Popup } from "react-leaflet";
-import "./LeafletMap.css";
+import "./WorldMap.css";
 
 /* Markeri mitte kuvamise fix: https://github.com/PaulLeCam/react-leaflet/issues/453 */
 import L from 'leaflet';
@@ -14,20 +14,19 @@ L.Icon.Default.mergeOptions({
 });
 
 /* Kaardi tööle saamine: https://youtu.be/DZfvr2zguHo */
-class LeafletMap extends Component  {
+class WorldMap extends Component  {
     constructor(props) {
         super(props);
-        let mapKeyVal = this.props.mapKeyValue;
         this.state = {
-            currentPos: this.props.latlng,
-            mapKeyValue: mapKeyVal,
-            zoom: 6,
+            currentCoordinates: this.props.latlng,
+            mapKeyValue: this.props.mapKeyValue,
+            zoomLevel: 6,
         };
         this.handleClick = this.handleClick.bind(this);
     }
 
     handleCoordinateChange = () => {
-        let newCoordinates = this.state.currentPos;
+        let newCoordinates = this.state.currentCoordinates;
         this.props.onCoordinatesChange(newCoordinates);
     };
 
@@ -35,17 +34,18 @@ class LeafletMap extends Component  {
     handleClick(e) {
         let newCoordinates = e.latlng;
         this.setState({
-            currentPos: newCoordinates,
-            zoom: this.map.leafletElement.getZoom(),
+            currentCoordinates: newCoordinates,
+            zoomLevel: this.map.leafletElement.getZoom(),
         });
         this.handleCoordinateChange();
     }
 
     render() {
         return (
-            <Map ref={(ref) => { this.map = ref; }}
-                 center={this.state.currentPos}
-                 zoom={this.state.zoom}
+            <Map
+                ref={(ref) => { this.map = ref; }}
+                 center={this.state.currentCoordinates}
+                 zoom={this.state.zoomLevel}
                  onClick={this.handleClick}
                  key={this.state.mapKeyValue}
                  maxBounds={[[-90, -180], [90, 180]]}
@@ -54,11 +54,11 @@ class LeafletMap extends Component  {
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />
-                <Marker position={this.state.currentPos}>
+                <Marker position={this.state.currentCoordinates}>
                     <Popup>
                         Valitud asukoht:<br/>
-                        Lat: {this.state.currentPos['lat']}<br/>
-                        Lng: {this.state.currentPos['lng']}
+                        Lat: {this.state.currentCoordinates['lat']}<br/>
+                        Lng: {this.state.currentCoordinates['lng']}
                     </Popup>
                 </Marker>
             </Map>
@@ -66,4 +66,4 @@ class LeafletMap extends Component  {
     }
 }
 
-export default LeafletMap;
+export default WorldMap;
