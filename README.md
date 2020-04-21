@@ -1,8 +1,6 @@
 ## Kuidas jooksutada
 
-Sammud:
-
-### `npm start`
+### Sammud:
 
 1.	Esmalt tuleb tõmmata [Node.js](https://nodejs.org/en/docs/).
     - Näiteks antud lingilt: https://nodejs.org/en/ (soovitatavalt versioon 12.16.2 LTS)
