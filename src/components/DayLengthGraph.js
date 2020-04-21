@@ -20,14 +20,15 @@ class DayLengthGraph extends Component {
         };
     }
 
+    // Lisame kõik algus- ja lõppkuupäeva (kaasa arvatud) vahel olevad kuupäevad listi ja tagastame
     calculateDatesBetween(startDate, endDate) {
         let datesBetweenList = [];
         datesBetweenList.push(startDate);
         let currentDate = new Date(startDate);
         while (currentDate < endDate) {
+            datesBetweenList.push(currentDate);
             let newDate = currentDate.setDate(currentDate.getDate() + 1);
             currentDate = new Date(newDate);
-            datesBetweenList.push(currentDate);
         }
         return datesBetweenList;
     }
@@ -35,6 +36,7 @@ class DayLengthGraph extends Component {
     componentDidMount() {
         let datesToLoop = this.calculateDatesBetween(this.props.startDate, this.props.endDate);
 
+        // Teeme igale listis olevale kuupäevale vastava API päringu
         for (let i = 0; i < datesToLoop.length; i++) {
             let fetchLinkBase = this.props.fetchLink;
             let fullFetchLink = fetchLinkBase + datesToLoop[i].toISOString().substring(0, datesToLoop[i].toISOString().indexOf('T'));
@@ -43,6 +45,7 @@ class DayLengthGraph extends Component {
                 .then(res => res.json())
                 .then(
                     (result) => {
+                        // Teisendame tulemused sobivale kujule ja lisame senini saadud tulemuste hulka
                         let datePieces = datesToLoop[i].toString().split(" ");
                         let dateString = datePieces[1] + ". " + datePieces[2];
                         let dayLengthPieces = result.results.day_length.split(':');

@@ -38,11 +38,10 @@ class HomePage extends Component {
 
 
     state = {
-        message: '',
         latitude: '58.377916',
-        latitudeTemp: '58.377916',
+        latitudeTemp: null,
         longtitude: '26.729050',
-        longtitudeTemp: '26.729050',
+        longtitudeTemp: null,
         currentDate: new Date(),
         startDate: new Date(),
         endDate: new Date(),
@@ -60,17 +59,34 @@ class HomePage extends Component {
         });
     };
 
+    /* API ei toeta pikkuskraadi ja/või laiuskraadi, mille väärtus on täpselt 0, seega tuleb veidi muuta */
+    fixZeroCoordinates(latitude, longtitude) {
+        if (parseFloat(latitude) === 0) {
+            latitude = 0.0001.toString();
+        }
+        if (parseFloat(longtitude) === 0) {
+            longtitude = 0.0001.toString();
+        }
+        return [latitude, longtitude];
+    }
+
     handleClick = e => {
-        /* API ei toeta pikkuskraadi ja/või laiuskraadi, mille väärtus on täpselt 0, seega tuleb veidi muuta */
+        // Võtame koordinaatide väärtused tekstiväljadest
         let currentLatitudeTemp = this.state.latitudeTemp;
         let currentLongtitudeTemp = this.state.longtitudeTemp;
+        // Kui koordinaadid on null (pole sisestatud), kasutame kaardilt saadud koordinaate
+        if (currentLatitudeTemp === null) {
+            currentLatitudeTemp = this.state.latitude;
+        }
+        if (currentLongtitudeTemp === null) {
+            currentLongtitudeTemp = this.state.longtitude;
+        }
         let currentDateString = this.state.currentDate.toISOString();
-        if (parseFloat(currentLongtitudeTemp) === 0.0) {
-            currentLongtitudeTemp = 0.0001.toString();
-        }
-        if (parseFloat(currentLatitudeTemp) === 0.0) {
-            currentLatitudeTemp = 0.0001.toString();
-        }
+        // Kontrollime, kas kumbki koordinaatidest on väärtusega 0, kui jah, muudame väärtuse 0.0001-ks
+        let fixedCoordinates = this.fixZeroCoordinates(currentLatitudeTemp, currentLongtitudeTemp);
+        currentLatitudeTemp = fixedCoordinates[0];
+        currentLongtitudeTemp = fixedCoordinates[1];
+        // Kontrollime, et koordinaadid on õiges vahemikus
         if (parseFloat(currentLatitudeTemp) >= -85.0 && parseFloat(currentLatitudeTemp) <= 85.0 &&
             parseFloat(currentLongtitudeTemp) >= -180.0 && parseFloat(currentLongtitudeTemp) <= 180.0) {
             this.setState({
@@ -79,10 +95,25 @@ class HomePage extends Component {
                     "&date=" + currentDateString,
                 showInfo: true,
                 infoKeyValue: this.state.infoKeyValue + 1,
-                latitude: currentLatitudeTemp,
-                longtitude: currentLongtitudeTemp,
-                mapKeyValue: this.state.mapKeyValue + 1,
             });
+            let updateMap = false;
+            // Kui tektstiväljadest saadud koordinaadid ei kattu state-s olevatega, uuendame state
+            if (this.state.latitude !== currentLatitudeTemp) {
+                updateMap = true;
+                this.setState({
+                    latitude: currentLatitudeTemp,
+                });
+            }
+            if (this.state.longtitude !== currentLongtitudeTemp) {
+                updateMap = true;
+                this.setState({
+                    longtitude: currentLongtitudeTemp,
+                });
+            }
+            // Kui kumbki state-s olevatest koordinaatidest uuendati, uuendame ka kaarti
+            if (updateMap) {
+                this.setState({ mapKeyValue: this.state.mapKeyValue + 1 })
+            }
         }
         else {
             alert("Sisestatud koordinaadid on vigased! \n" +
@@ -98,6 +129,7 @@ class HomePage extends Component {
             alert('Alguskuupäev peab olema väiksem kui lõppkuupäev!');
         }
         else {
+            // Loeme kokku päevade arvu algus- ja lõppkuupäeva vahel, kui suurem kui 30, siis ei luba
             let currentDate = new Date(this.state.startDate);
             let amountOfDates = 0;
             let endDate = this.state.endDate;
@@ -107,7 +139,7 @@ class HomePage extends Component {
                 currentDate = new Date(newDate);
             }
             if (amountOfDates > 30) {
-                alert('Kuupäevade vahe võib olla maksimum 30 päeva!')
+                alert('Kuupäevade vahe võib olla maksimaalselt 30 päeva!')
             }
             else {
                 this.setState({
@@ -121,7 +153,7 @@ class HomePage extends Component {
         }
     };
 
-    /* The child component WorldMap uses this function to update the coordinates here */
+    // WorldMap kasutab seda HomePage funktsiooni, et uuendada HomePage state-s koordinaate
     handleCoordinates = (newCoordinates) => {
         this.setState({
             latitude: newCoordinates['lat'].toString(),

@@ -25,6 +25,8 @@ class WorldMap extends Component  {
         this.handleClick = this.handleClick.bind(this);
     }
 
+    // Koordinaatide muutusel kaardile vajutades, kutsume välja HomePage-lt saadud props-i, mis on funktsioon
+    // mis uuendab HomePage state-s koordinaate
     handleCoordinateChange = () => {
         let newCoordinates = this.state.currentCoordinates;
         this.props.onCoordinatesChange(newCoordinates);
@@ -44,13 +46,14 @@ class WorldMap extends Component  {
         return (
             <Map
                 ref={(ref) => { this.map = ref; }}
-                 center={this.state.currentCoordinates}
-                 zoom={this.state.zoomLevel}
-                 onClick={this.handleClick}
-                 key={this.state.mapKeyValue}
-                 maxBounds={[[-90, -180], [90, 180]]}
+                center={this.state.currentCoordinates}
+                zoom={this.state.zoomLevel}
+                onClick={this.handleClick}
+                key={this.state.mapKeyValue}
+                maxBounds={[[-90, -180], [90, 180]]}
             >
                 <TileLayer
+                    minZoom={3}
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 />

@@ -56,9 +56,11 @@ class DayLengthInfo extends Component {
         else {
             return (
                 <div>
-                    <p>Päikesetõusu kellaaeg: {results.sunrise} UTC</p>
-                    <p>Päikeseloojangu kellaaeg: {results.sunset} UTC</p>
-                    <p>Päeva pikkus: {results.day_length} UTC</p>
+                    <ul>
+                        <li><p>Päikesetõusu kellaaeg: {results.sunrise} UTC</p></li>
+                        <li><p>Päikeseloojangu kellaaeg: {results.sunset} UTC</p></li>
+                        <li><p>Päeva pikkus: {results.day_length} UTC</p></li>
+                    </ul>
                 </div>
             );
         }
