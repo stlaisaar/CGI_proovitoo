@@ -35,5 +35,32 @@ Pidevaks takistuseks, just viimastel päevadel, osutus valitud päeva andmete AP
 
 Ajakuluks hindaksin umbes 15-20 tundi. Täpsemalt ei oska kahjuks hetkel öelda, kuna tegelesin proovitööga mõnikord mitu tundi järjest, kuid mõnikord ka muude kohustuste vahelt tekkinud vabadel hetkedel. Pigem kaldub ajakulu 20 tunni poole, kui arvestada sinna sisse dokumentatsioonide lugemisi, videote vaatamisi jms.
 
+## Etappide ja töökäskude tõlgendus
+Kopeerisin siia tööjuhendist võetud etapid ning lisasin neile alapunktidena enda tõlgenduse neist.
+
+**Etapp 1 Päeva pikkuse kuvamine koordinaatide ja kuupäeva alusel**  
+1. Loo uus projekt oma arendusvahendisse. Kasuta endale sobivat vahendit, näiteks VS Code, Atom, Sublime või miski muu.
+   - Kasutasin IntelliJ WebStorm-i IDE-t ja projekti lõin ReactJS abil. 
+2. Loo vaade, kus saab kasutaja sisestada asukoha koordinaate (latitude, longitude) ja kuupäeva. Koordinaatide kuvamiseks kasutada EPSG:4326 koordinaatsüsteemi. 
+   - Kasutangi ühte vaadet (n-ö *home page*), mis avaneb veebirakendust avades. Vaates on väljad laius- ja pikkuskraadide sisestamiseks. Nende all on kuupäeva valiku võimalus. Toetatav koordinaatidesüsteem vastab EPSG:4326 loogikale.
+3. Kuva vaates päikesetõusu ja –loojangu aega ning päeva pikkust. Kellaajad võivad olla UTC või asukoha ajavööndis. 
+   - Kinnitades koordinaadid ja kuupäev vastavale nupule vajutades, kuvatakse andmetele vastava päeva pikkus ning päikesetõusu ja -loojangu kellaajad UTC ajavormingus.
+   
+**Etapp 2 Asukoha valimine kaardilt**
+1. Lisa juurde kaart (näiteks OpenStreetMap vms) ja sisestatud koordinaatide kuvamine kaardil.
+   - Lisasin Leaflet-i ja React-Leaflet-i abil juurde kaardi, mis põhineb OpenStreetMap-il. Kaardil kuvatakse koordinaatide asukohta (algselt vaikekoordinaatide). Koordinaatide väljas nende muutmisel ja seejärel kinnitamisel kuvatakse kaardil koordinaatide uut asukohta.
+2. Lisa juurde kaardilt asukoha valimise võimalus.
+   - Kaardile vajutades liigub kaardil olev koordinaatide asukohta täpsustav märgend ning muutuvad ka veebirakenduse sees hoiustatavad aktiivsed koordinaadid.
+   
+**Etapp 3 Päeva pikkuse muutumise kujutamine graafiliselt**
+1. Lisa juurde päeva pikkuse graafiku kuvamise võimalus. Selleks saab kasutaja sisestada lisaks kuupäevade vahemiku.
+   - Lisasin kaks kuupäevavahemiku valimiseks mõeldud kuupäeva valiku välja
+2. Kuva kasutajale graafiliselt päeva pikkuse muutumine valitud ajavahemikul (graafiku horisontaalteljel kuupäevad ja vertikaalteljel päeva pikkus).
+   - Kuupäevade vahemiku kinnitamiseks on nupp, millele vajutades kuvatakse graafik, mis näitab päevade pikkusi minutites alates kuupäevavahemiku alguskuupäevast kuni lõppkuupäevani (mõlemad kaasa arvatud).
+   
+**Etapp 4 „Kui aega jääb üle“**
+1. Muuda rakendust ilusamaks ja lisa juurde muid ägedaid funktsioone.
+   - Disainisin jooksvalt veebirakendust.
+
 ## Autor
 Siim Tanel Laisaar
