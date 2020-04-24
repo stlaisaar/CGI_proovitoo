@@ -40,7 +40,7 @@ Kopeerisin siia tööjuhendist võetud etapid ning lisasin neile alapunktidena e
 
 **Etapp 1 Päeva pikkuse kuvamine koordinaatide ja kuupäeva alusel**  
 1. Loo uus projekt oma arendusvahendisse. Kasuta endale sobivat vahendit, näiteks VS Code, Atom, Sublime või miski muu.
-   - Kasutasin IntelliJ WebStorm-i IDE-t ja projekti lõin ReactJS abil. 
+   - Kasutasin JetBrains-i WebStorm-i IDE-t ja projekti lõin ReactJS abil. 
 2. Loo vaade, kus saab kasutaja sisestada asukoha koordinaate (latitude, longitude) ja kuupäeva. Koordinaatide kuvamiseks kasutada EPSG:4326 koordinaatsüsteemi. 
    - Kasutangi ühte vaadet (n-ö *home page*), mis avaneb veebirakendust avades. Vaates on väljad laius- ja pikkuskraadide sisestamiseks. Nende all on kuupäeva valiku võimalus. Toetatav koordinaatidesüsteem vastab EPSG:4326 loogikale.
 3. Kuva vaates päikesetõusu ja –loojangu aega ning päeva pikkust. Kellaajad võivad olla UTC või asukoha ajavööndis. 
